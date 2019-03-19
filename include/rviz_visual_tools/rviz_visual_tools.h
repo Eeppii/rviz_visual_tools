@@ -694,6 +694,22 @@ a   *        Warning: when using this in a loop be sure to call trigger() at end
   /**
    * \brief Publish transformed wireframe cuboid. Useful eg to show an oriented bounding box.
    * \param pose - cuboid vertices are transformed according to it
+   * \param depth - object depth
+   * \param width - object width
+   * \param height - object height
+   * \param scale - size of axis
+   * \param color - an enum pre-defined name of a color
+   * \param ns - namespace
+   * \param id - unique counter of mesh that allows you to overwrite a previous mesh. if 0, defaults
+   * to incremental counter
+   * \return true on success
+   */
+  bool publishWireframeCuboid(const Eigen::Isometry3d& pose, double depth, double width, double height,
+                              scales scale, colors color = BLUE, const std::string& ns = "Wireframe Cuboid", std::size_t id = 0);
+
+  /**
+   * \brief Publish transformed wireframe cuboid. Useful eg to show an oriented bounding box.
+   * \param pose - cuboid vertices are transformed according to it
    * \param min_point - minimum x, y, z coordinates
    * \param max_point - maximum x, y, z coordinates
    * \param color - an enum pre-defined name of a color
@@ -703,6 +719,21 @@ a   *        Warning: when using this in a loop be sure to call trigger() at end
    */
   bool publishWireframeCuboid(const Eigen::Isometry3d& pose, const Eigen::Vector3d& min_point,
                               const Eigen::Vector3d& max_point, colors color = BLUE,
+                              const std::string& ns = "Wireframe Cuboid", std::size_t id = 0);
+
+  /**
+   * \brief Publish transformed wireframe cuboid. Useful eg to show an oriented bounding box.
+   * \param pose - cuboid vertices are transformed according to it
+   * \param min_point - minimum x, y, z coordinates
+   * \param max_point - maximum x, y, z coordinates
+   * \param scale - size of axis
+   * \param color - an enum pre-defined name of a color
+   * \param ns - namespace
+   * \param id - unique counter that allows you to overwrite a previous marker. if 0, defaults to incremental counter
+   * \return true on success
+   */
+  bool publishWireframeCuboid(const Eigen::Isometry3d& pose, const Eigen::Vector3d& min_point,
+                              const Eigen::Vector3d& max_point, scales scale, colors color = BLUE,
                               const std::string& ns = "Wireframe Cuboid", std::size_t id = 0);
 
   /**

@@ -2062,6 +2062,121 @@ bool RvizVisualTools::publishWireframeCuboid(const Eigen::Isometry3d& pose, doub
   return publishWireframeCuboid(pose, min_point, max_point, color, ns, id);
 }
 
+bool RvizVisualTools::publishWireframeCuboid(const Eigen::Isometry3d& pose, double depth, double width, double height,
+                                             scales scale, colors color, const std::string& ns, std::size_t id)
+{
+  Eigen::Vector3d min_point, max_point;
+  min_point << -depth / 2, -width / 2, -height / 2;
+  max_point << depth / 2, width / 2, height / 2;
+  return publishWireframeCuboid(pose, min_point, max_point, scale, color, ns, id);
+}
+
+bool RvizVisualTools::publishWireframeCuboid(const Eigen::Isometry3d& pose, const Eigen::Vector3d& min_point,
+                                             const Eigen::Vector3d& max_point, scales scale, colors color, const std::string& ns,
+                                             std::size_t id) {
+  // Extract 8 cuboid vertices
+  Eigen::Vector3d p1(min_point[0], min_point[1], min_point[2]);
+  Eigen::Vector3d p2(min_point[0], min_point[1], max_point[2]);
+  Eigen::Vector3d p3(max_point[0], min_point[1], max_point[2]);
+  Eigen::Vector3d p4(max_point[0], min_point[1], min_point[2]);
+  Eigen::Vector3d p5(min_point[0], max_point[1], min_point[2]);
+  Eigen::Vector3d p6(min_point[0], max_point[1], max_point[2]);
+  Eigen::Vector3d p7(max_point[0], max_point[1], max_point[2]);
+  Eigen::Vector3d p8(max_point[0], max_point[1], min_point[2]);
+
+  p1 = pose * p1;
+  p2 = pose * p2;
+  p3 = pose * p3;
+  p4 = pose * p4;
+  p5 = pose * p5;
+  p6 = pose * p6;
+  p7 = pose * p7;
+  p8 = pose * p8;
+
+  // Setup marker
+  line_list_marker_.header.stamp = ros::Time();
+  line_list_marker_.ns = ns;
+
+  if (id == 0)
+  {  // Provide a new id every call to this function
+    line_list_marker_.id++;
+  }
+  else
+  {  // allow marker to be overwritten
+    line_list_marker_.id = id;
+  }
+
+  std_msgs::ColorRGBA this_color = getColor(color);
+  line_list_marker_.scale = getScale(scale);
+  line_list_marker_.color = this_color;
+  line_list_marker_.points.clear();
+  line_list_marker_.colors.clear();
+
+  // Add each point pair to the line message
+  line_list_marker_.points.push_back(convertPoint(p1));
+  line_list_marker_.points.push_back(convertPoint(p2));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p1));
+  line_list_marker_.points.push_back(convertPoint(p4));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p1));
+  line_list_marker_.points.push_back(convertPoint(p5));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p5));
+  line_list_marker_.points.push_back(convertPoint(p6));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p5));
+  line_list_marker_.points.push_back(convertPoint(p8));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p2));
+  line_list_marker_.points.push_back(convertPoint(p6));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p6));
+  line_list_marker_.points.push_back(convertPoint(p7));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p7));
+  line_list_marker_.points.push_back(convertPoint(p8));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p2));
+  line_list_marker_.points.push_back(convertPoint(p3));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p4));
+  line_list_marker_.points.push_back(convertPoint(p8));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p3));
+  line_list_marker_.points.push_back(convertPoint(p4));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  line_list_marker_.points.push_back(convertPoint(p3));
+  line_list_marker_.points.push_back(convertPoint(p7));
+  line_list_marker_.colors.push_back(this_color);
+  line_list_marker_.colors.push_back(this_color);
+
+  // Helper for publishing rviz markers
+  return publishMarker(line_list_marker_);
+}
+
 bool RvizVisualTools::publishWireframeCuboid(const Eigen::Isometry3d& pose, const Eigen::Vector3d& min_point,
                                              const Eigen::Vector3d& max_point, colors color, const std::string& ns,
                                              std::size_t id)
